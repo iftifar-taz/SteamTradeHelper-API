@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SteamTradeHelper.Client.Models\SteamTradeHelper.Client.Models.csproj" />
+    <ProjectReference Include="..\SteamTradeHelper.Client\SteamTradeHelper.Client.csproj" />
+    <ProjectReference Include="..\SteamTradeHelper.Context\SteamTradeHelper.Context.csproj" />
+    <ProjectReference Include="..\SteamTradeHelper.Mappings\SteamTradeHelper.Mappings.csproj" />
+    <ProjectReference Include="..\SteamTradeHelper.Repositories\SteamTradeHelper.Repositories.csproj" />
+    <ProjectReference Include="..\SteamTradeHelper.Services\SteamTradeHelper.Services.csproj" />
+    <ProjectReference Include="..\SteamTradeHelper.Utilities\SteamTradeHelper.Utilities.csproj" />
+  </ItemGroup>
+
+</Project>

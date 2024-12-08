@@ -1,0 +1,76 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTradeHelper.API", "SteamTradeHelper.API\SteamTradeHelper.API.csproj", "{D16C047E-5FAA-40C1-960E-75BE03F41075}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTradeHelper.Context", "SteamTradeHelper.Context\SteamTradeHelper.Context.csproj", "{B436F2C4-6522-4C9B-AA32-EC5CFB0096A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTradeHelper.Context.Models", "SteamTradeHelper.Context.Models\SteamTradeHelper.Context.Models.csproj", "{8DDE563F-D174-4C09-9966-3E574E3C0592}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTradeHelper.Utilities", "SteamTradeHelper.Utilities\SteamTradeHelper.Utilities.csproj", "{EE0E60B7-191C-4297-B344-21921000DA6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTradeHelper.Repositories", "SteamTradeHelper.Repositories\SteamTradeHelper.Repositories.csproj", "{E4E63035-41F4-402F-A09B-62F0A828E6DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTradeHelper.Client.Models", "SteamTradeHelper.Client.Models\SteamTradeHelper.Client.Models.csproj", "{CAF1D66C-F324-434C-AF92-A76A9F0A9472}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTradeHelper.Client", "SteamTradeHelper.Client\SteamTradeHelper.Client.csproj", "{50A89D68-C677-401B-A5AB-88998DA13214}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTradeHelper.Dtos", "SteamTradeHelper.Dtos\SteamTradeHelper.Dtos.csproj", "{5FB0260B-C80B-4E86-8B75-30FD0E84F9B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTradeHelper.Mappings", "SteamTradeHelper.Mappings\SteamTradeHelper.Mappings.csproj", "{79C51536-F21F-4DC2-887A-B2FFA4E3B8C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTradeHelper.Services", "SteamTradeHelper.Services\SteamTradeHelper.Services.csproj", "{B9A25E52-1A69-4F25-9F8B-8E5B3F00EAE0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D16C047E-5FAA-40C1-960E-75BE03F41075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D16C047E-5FAA-40C1-960E-75BE03F41075}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D16C047E-5FAA-40C1-960E-75BE03F41075}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D16C047E-5FAA-40C1-960E-75BE03F41075}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B436F2C4-6522-4C9B-AA32-EC5CFB0096A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B436F2C4-6522-4C9B-AA32-EC5CFB0096A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B436F2C4-6522-4C9B-AA32-EC5CFB0096A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B436F2C4-6522-4C9B-AA32-EC5CFB0096A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DDE563F-D174-4C09-9966-3E574E3C0592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DDE563F-D174-4C09-9966-3E574E3C0592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DDE563F-D174-4C09-9966-3E574E3C0592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DDE563F-D174-4C09-9966-3E574E3C0592}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE0E60B7-191C-4297-B344-21921000DA6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE0E60B7-191C-4297-B344-21921000DA6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE0E60B7-191C-4297-B344-21921000DA6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE0E60B7-191C-4297-B344-21921000DA6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4E63035-41F4-402F-A09B-62F0A828E6DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4E63035-41F4-402F-A09B-62F0A828E6DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4E63035-41F4-402F-A09B-62F0A828E6DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4E63035-41F4-402F-A09B-62F0A828E6DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAF1D66C-F324-434C-AF92-A76A9F0A9472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAF1D66C-F324-434C-AF92-A76A9F0A9472}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAF1D66C-F324-434C-AF92-A76A9F0A9472}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAF1D66C-F324-434C-AF92-A76A9F0A9472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50A89D68-C677-401B-A5AB-88998DA13214}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50A89D68-C677-401B-A5AB-88998DA13214}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50A89D68-C677-401B-A5AB-88998DA13214}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50A89D68-C677-401B-A5AB-88998DA13214}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FB0260B-C80B-4E86-8B75-30FD0E84F9B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FB0260B-C80B-4E86-8B75-30FD0E84F9B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FB0260B-C80B-4E86-8B75-30FD0E84F9B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FB0260B-C80B-4E86-8B75-30FD0E84F9B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79C51536-F21F-4DC2-887A-B2FFA4E3B8C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79C51536-F21F-4DC2-887A-B2FFA4E3B8C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79C51536-F21F-4DC2-887A-B2FFA4E3B8C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79C51536-F21F-4DC2-887A-B2FFA4E3B8C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9A25E52-1A69-4F25-9F8B-8E5B3F00EAE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9A25E52-1A69-4F25-9F8B-8E5B3F00EAE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9A25E52-1A69-4F25-9F8B-8E5B3F00EAE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9A25E52-1A69-4F25-9F8B-8E5B3F00EAE0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

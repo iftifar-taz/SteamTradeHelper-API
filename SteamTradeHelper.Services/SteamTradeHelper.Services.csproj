@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SteamTradeHelper.Client\SteamTradeHelper.Client.csproj" />
+    <ProjectReference Include="..\SteamTradeHelper.Dtos\SteamTradeHelper.Dtos.csproj" />
+    <ProjectReference Include="..\SteamTradeHelper.Mappings\SteamTradeHelper.Mappings.csproj" />
+    <ProjectReference Include="..\SteamTradeHelper.Repositories\SteamTradeHelper.Repositories.csproj" />
+  </ItemGroup>
+
+</Project>
