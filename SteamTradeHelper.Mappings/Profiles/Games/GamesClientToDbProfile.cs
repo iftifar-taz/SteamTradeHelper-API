@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using SteamTradeHelper.Client.Models.Games;
 using SteamTradeHelper.Context.Models;
-using SteamTradeHelper.Dtos;
 
 namespace SteamTradeHelper.Mappings.Profiles.Games
 {
@@ -14,7 +8,7 @@ namespace SteamTradeHelper.Mappings.Profiles.Games
     {
         public GamesClientToDbProfile()
         {
-            this.CreateMap<GameInformation, Game>()
+            CreateMap<GameInformation, Game>()
                 .ForPath(dest => dest.Name, opt => opt.MapFrom(
                     src => src.name))
                 .ForPath(dest => dest.AppId, opt => opt.MapFrom(

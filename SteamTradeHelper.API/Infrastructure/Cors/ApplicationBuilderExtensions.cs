@@ -4,7 +4,8 @@
     {
         public static void UseCustomCors(this IApplicationBuilder app)
         {
-            app.UseCors(options => {
+            app.UseCors(options =>
+            {
                 options.AllowAnyHeader();
                 options.AllowAnyMethod();
                 options.AllowAnyOrigin();

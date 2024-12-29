@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SteamTradeHelper.Client.Models.Cards
+﻿namespace SteamTradeHelper.Client.Models.Cards
 {
     public class CardsResponse
     {
@@ -12,10 +6,10 @@ namespace SteamTradeHelper.Client.Models.Cards
 
         public int ItemId { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public int InventoryCount { get; set; }
 
-        public string LogoUrl { get; set; }
+        public string? LogoUrl { get; set; }
     }
 }

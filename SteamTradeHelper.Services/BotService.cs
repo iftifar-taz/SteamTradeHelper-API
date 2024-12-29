@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using SteamTradeHelper.Context.Models;
 using SteamTradeHelper.Dtos;
 using SteamTradeHelper.Repositories.Contracts;
@@ -12,20 +7,14 @@ using SteamTradeHelper.Utilities.Exceptions;
 
 namespace SteamTradeHelper.Services
 {
-    public class BotService : IBotService
+    public class BotService(IBaseRepository<Bot> botRepository, IMapper mapper) : IBotService
     {
-        private readonly IBaseRepository<Bot> botRepository;
-        private readonly IMapper mapper;
-
-        public BotService(IBaseRepository<Bot> botRepository, IMapper mapper)
-        {
-            this.botRepository = botRepository;
-            this.mapper = mapper;
-        }
+        private readonly IBaseRepository<Bot> botRepository = botRepository;
+        private readonly IMapper mapper = mapper;
 
         public async Task<ListResponse<BotDto>> GetAll()
         {
-            var bots = await this.botRepository.GetAll();
+            var bots = await botRepository.GetAll();
             if (!bots.Any())
             {
                 throw new EmptyListException();
@@ -33,7 +22,7 @@ namespace SteamTradeHelper.Services
 
             return new ListResponse<BotDto>()
             {
-                List = this.mapper.Map<IEnumerable<Bot>, IReadOnlyCollection<BotDto>>(bots),
+                List = mapper.Map<IEnumerable<Bot>, IReadOnlyCollection<BotDto>>(bots),
                 Total = bots.Count(),
                 LastSynced = bots.Max(x => x.UpdatedAt),
             };
@@ -41,8 +30,8 @@ namespace SteamTradeHelper.Services
 
         public async Task<BotDto> Get(int botId)
         {
-            var bot = await this.botRepository.GetById(botId);
-            return bot == null ? throw new EmptyItemException() : this.mapper.Map<Bot, BotDto>(bot);
+            var bot = await botRepository.GetById(botId) ?? throw new EmptyItemException();
+            return mapper.Map<Bot, BotDto>(bot);
         }
     }
 }

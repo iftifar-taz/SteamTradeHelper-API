@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace SteamTradeHelper.Client.Models.Games
 {
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Legacy code")]
     public class GamesResponse
     {
-        public GamesSteamResponse response { get; set; }
+        public GamesSteamResponse? response { get; set; }
     }
 }

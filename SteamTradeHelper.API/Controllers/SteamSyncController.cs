@@ -8,56 +8,51 @@ namespace SteamTradeHelper.API.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class SteamSyncController : ControllerBase
+    public class SteamSyncController(ISteamSyncService steamGamesService) : ControllerBase
     {
-        private readonly ISteamSyncService steamGamesService;
+        private readonly ISteamSyncService steamGamesService = steamGamesService;
 
-        public SteamSyncController(ISteamSyncService steamGamesService)
-        {
-            this.steamGamesService = steamGamesService;
-        }
-
-        [HttpGet("games", Name = "SyncGames")]
+        [HttpPost("games", Name = "SyncGames")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> SyncGames()
         {
-            await this.steamGamesService.SyncGames();
-            return this.Ok();
+            await steamGamesService.SyncGames();
+            return Ok();
         }
 
-        [HttpGet("games/{gameId}/cards", Name = "SyncGameCards")]
+        [HttpPost("games/{gameId}/cards", Name = "SyncGameCards")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> SyncGameCards(
             [FromRoute] int gameId)
         {
-            await this.steamGamesService.SyncGameCards(gameId);
-            return this.Ok();
+            await steamGamesService.SyncGameCards(gameId);
+            return Ok();
         }
 
-        [HttpGet("games/{gameId}/card-prices", Name = "SyncGameCardPrices")]
+        [HttpPatch("games/{gameId}/cards/price", Name = "SyncGameCardPrices")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> SyncGameCardPrices(
             [FromRoute] int gameId)
         {
-            await this.steamGamesService.SyncCardPrices(gameId);
-            return this.Ok();
+            await steamGamesService.SyncCardPrices(gameId);
+            return Ok();
         }
 
-        [HttpGet("bots", Name = "SyncBots")]
+        [HttpPost("bots", Name = "SyncBots")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> SyncBots()
         {
-            await this.steamGamesService.SyncBots();
-            return this.Ok();
+            await steamGamesService.SyncBots();
+            return Ok();
         }
 
-        [HttpGet("bots/{botId}/inventory-count", Name = "SyncBotInventoryCount")]
+        [HttpPatch("bots/{botId}/inventory-count", Name = "SyncBotInventoryCount")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<BotDto>> SyncBotInventoryCount(
             [FromRoute] int botId)
         {
-            await this.steamGamesService.SyncBotInventoryCount(botId);
-            return this.Ok();
+            await steamGamesService.SyncBotInventoryCount(botId);
+            return Ok();
         }
     }
 }

@@ -8,9 +8,9 @@
 
         public int GameId { get; set; }
 
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
-        public string LogoUrl { get; set; }
+        public string? LogoUrl { get; set; }
 
         public bool IsBuyTradeable { get; set; }
 

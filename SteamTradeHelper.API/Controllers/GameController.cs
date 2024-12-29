@@ -9,14 +9,9 @@ namespace SteamTradeHelper.API.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class GameController : ControllerBase
+    public class GameController(IGameService gameService) : ControllerBase
     {
-        private readonly IGameService gameService;
-
-        public GameController(IGameService gameService)
-        {
-            this.gameService = gameService;
-        }
+        private readonly IGameService gameService = gameService;
 
         [HttpGet("", Name = "GetAllGames")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -25,12 +20,12 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                var response = await this.gameService.GetAll();
-                return this.Ok(response);
+                var response = await gameService.GetAll();
+                return Ok(response);
             }
             catch (EmptyListException e)
             {
-                return this.BadRequest(e.Message);
+                return BadRequest(e.Message);
             }
         }
 
@@ -42,12 +37,12 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                var response = await this.gameService.Get(gameId);
-                return this.Ok(response);
+                var response = await gameService.Get(gameId);
+                return Ok(response);
             }
             catch (EmptyItemException e)
             {
-                return this.BadRequest(e.Message);
+                return BadRequest(e.Message);
             }
         }
 
@@ -58,12 +53,12 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                await this.gameService.SetTradeability();
-                return this.Ok();
+                await gameService.SetTradeability();
+                return Ok();
             }
             catch (EmptyItemException e)
             {
-                return this.BadRequest(e.Message);
+                return BadRequest(e.Message);
             }
         }
 
@@ -75,12 +70,12 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                await this.gameService.SetTradeability(gameId);
-                return this.Ok();
+                await gameService.SetTradeability(gameId);
+                return Ok();
             }
             catch (EmptyItemException e)
             {
-                return this.BadRequest(e.Message);
+                return BadRequest(e.Message);
             }
         }
     }

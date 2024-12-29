@@ -17,7 +17,7 @@ namespace SteamTradeHelper.Context.Models
 
         public Base()
         {
-            this.CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateTime.UtcNow;
         }
     }
 }

@@ -2,10 +2,10 @@
 {
     public class SteamSettings
     {
-        public string SteamId { get; set; }
+        public required string SteamId { get; set; }
 
-        public string SteamKey { get; set; }
+        public required string SteamKey { get; set; }
 
-        public string SteamAppId { get; set; }
+        public required string SteamAppId { get; set; }
     }
 }

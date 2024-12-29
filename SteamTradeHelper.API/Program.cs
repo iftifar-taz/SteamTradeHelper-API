@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using SteamTradeHelper.Context;
-using SteamTradeHelper.Dtos;
-using SteamTradeHelper.Services.Infrastructure;
-using SteamTradeHelper.Repositories.Infrastructure;
-using SteamTradeHelper.Client.Infrastructure;
-using SteamTradeHelper.Mappings.Infrastructure;
 using SteamTradeHelper.API.Infrastructure.Cors;
 using SteamTradeHelper.API.Infrastructure.Middlewares;
+using SteamTradeHelper.Client.Infrastructure;
+using SteamTradeHelper.Context;
+using SteamTradeHelper.Dtos;
+using SteamTradeHelper.Mappings.Infrastructure;
+using SteamTradeHelper.Repositories.Infrastructure;
+using SteamTradeHelper.Services.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

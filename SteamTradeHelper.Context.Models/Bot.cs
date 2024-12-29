@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SteamTradeHelper.Context.Models
+﻿namespace SteamTradeHelper.Context.Models
 {
     public class Bot : Base
     {

@@ -5,26 +5,20 @@ using SteamTradeHelper.Repositories.Contracts;
 
 namespace SteamTradeHelper.Repositories
 {
-    public class BaseRepository<T> : IBaseRepository<T>
+    public class BaseRepository<T>(DataContext context) : IBaseRepository<T>
         where T : Base
     {
-        private readonly DataContext context;
-        private readonly DbSet<T> table;
-
-        public BaseRepository(DataContext context)
-        {
-            this.context = context;
-            this.table = context.Set<T>();
-        }
+        private readonly DataContext context = context;
+        private readonly DbSet<T> entity = context.Set<T>();
 
         public virtual IQueryable<T> GetQueryable()
         {
-            return this.table;
+            return entity;
         }
 
         public virtual async Task<IEnumerable<T>> GetAll()
         {
-            return await this.table.ToListAsync();
+            return await entity.ToListAsync();
         }
 
         public virtual async Task<IEnumerable<T>> GetAllQuery(IQueryable<T> query)
@@ -32,53 +26,53 @@ namespace SteamTradeHelper.Repositories
             return await query.ToListAsync();
         }
 
-        public virtual async Task<T> GetById(int id)
+        public virtual async Task<T?> GetById(int id)
         {
-            return await this.table.FindAsync(id);
+            return await entity.FindAsync(id) ?? null;
         }
 
-        public virtual async Task<T> GetByIdQuery(int id, IQueryable<T> query)
+        public virtual async Task<T?> GetByIdQuery(int id, IQueryable<T> query)
         {
-            return await query.FirstOrDefaultAsync(x => x.Id == id);
+            return await query.FirstOrDefaultAsync(x => x.Id == id) ?? null;
         }
 
-        public virtual async Task<T> GetQuery(IQueryable<T> query)
+        public virtual async Task<T?> GetQuery(IQueryable<T> query)
         {
-            return await query.FirstOrDefaultAsync();
+            return await query.FirstOrDefaultAsync() ?? null;
         }
 
         public virtual async Task Save(T obj)
         {
-            await this.table.AddAsync(obj);
-            await this.context.SaveChangesAsync();
+            await entity.AddAsync(obj);
+            await context.SaveChangesAsync();
         }
 
         public virtual async Task SaveAll(IEnumerable<T> objs)
         {
-            await this.table.AddRangeAsync(objs);
-            await this.context.SaveChangesAsync();
+            await entity.AddRangeAsync(objs);
+            await context.SaveChangesAsync();
         }
 
         public virtual async Task Put(T obj)
         {
-            await this.context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         public virtual async Task PutAll(IEnumerable<T> objs)
         {
-            await this.context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         public virtual async Task Delete(T obj)
         {
-            this.table.Remove(obj);
-            await this.context.SaveChangesAsync();
+            entity.Remove(obj);
+            await context.SaveChangesAsync();
         }
 
         public virtual async Task DeleteAll(IEnumerable<T> objs)
         {
-            this.table.RemoveRange(objs);
-            await this.context.SaveChangesAsync();
+            entity.RemoveRange(objs);
+            await context.SaveChangesAsync();
         }
     }
 }

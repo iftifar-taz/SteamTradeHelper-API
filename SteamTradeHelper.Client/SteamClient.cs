@@ -1,39 +1,38 @@
-﻿using Newtonsoft.Json;
+﻿using System.Globalization;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text;
+using Newtonsoft.Json;
+using SteamTradeHelper.Client.Contracts;
 using SteamTradeHelper.Client.Models.Games;
 using SteamTradeHelper.Client.Models.Inventories;
 using SteamTradeHelper.Client.Models.ItemPrice;
 using SteamTradeHelper.Client.Models.Steam;
-using System.Globalization;
-using System.Net.Http.Headers;
-using System.Net;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using SteamTradeHelper.Client.Contracts;
 
 namespace SteamTradeHelper.Client
 {
-    public class SteamClient : ISteamClient
+    public class SteamClient(HttpClient _httpClient) : ISteamClient
     {
-        private readonly HttpClient httpClient;
-        private readonly Lazy<JsonSerializerSettings> settings;
-
-        public SteamClient(HttpClient httpClient)
-        {
-            this.httpClient = httpClient;
-            this.settings = new Lazy<JsonSerializerSettings>(() =>
+        private readonly HttpClient httpClient = _httpClient;
+        private readonly Lazy<JsonSerializerSettings> settings = new(() =>
             {
                 var settings = new JsonSerializerSettings();
                 return settings;
             });
+
+        public void Dispose()
+        {
+            httpClient.Dispose();
         }
 
         public async Task<SwaggerResponse<GamesResponse>> GetSteamGamesAsync(string steamId, string key)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append("http://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={key}&steamid={steamId}&include_appinfo=true");
-            urlBuilder_.Replace("{key}", Uri.EscapeDataString(this.ConvertToString(key, CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{steamId}", Uri.EscapeDataString(this.ConvertToString(steamId, CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{key}", Uri.EscapeDataString(ConvertToString(key, CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{steamId}", Uri.EscapeDataString(ConvertToString(steamId, CultureInfo.InvariantCulture)));
 
             using var request_ = new HttpRequestMessage();
             request_.Method = new HttpMethod("GET");
@@ -41,14 +40,14 @@ namespace SteamTradeHelper.Client
 
             var url_ = urlBuilder_.ToString();
             request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-            return await this.GetResponse<GamesResponse>(request_);
+            return await GetResponse<GamesResponse>(request_);
         }
 
         public async Task<string> GetSteamGameCardsPageAsync(int appId)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append("https://steamcommunity.com/profiles/76561198135500749/gamecards/{appId}");
-            urlBuilder_.Replace("{appId}", Uri.EscapeDataString(this.ConvertToString(appId, CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{appId}", Uri.EscapeDataString(ConvertToString(appId, CultureInfo.InvariantCulture)));
 
             using var request_ = new HttpRequestMessage();
             request_.Method = new HttpMethod("GET");
@@ -57,7 +56,7 @@ namespace SteamTradeHelper.Client
             var url_ = urlBuilder_.ToString();
             request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
 
-            var response_ = await this.httpClient.GetByteArrayAsync(url_);
+            var response_ = await httpClient.GetByteArrayAsync(url_);
             var source_ = Encoding.GetEncoding("utf-8").GetString(response_, 0, response_.Length - 1);
             return WebUtility.HtmlDecode(source_);
         }
@@ -66,9 +65,9 @@ namespace SteamTradeHelper.Client
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append("https://steamcommunity.com/market/listings/{steamAppId}/{appId}-{cardName}");
-            urlBuilder_.Replace("{steamAppId}", Uri.EscapeDataString(this.ConvertToString(steamAppId, CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{appId}", Uri.EscapeDataString(this.ConvertToString(appId, CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{cardName}", Uri.EscapeDataString(this.ConvertToString(cardName, CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{steamAppId}", Uri.EscapeDataString(ConvertToString(steamAppId, CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{appId}", Uri.EscapeDataString(ConvertToString(appId, CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{cardName}", Uri.EscapeDataString(ConvertToString(cardName, CultureInfo.InvariantCulture)));
 
             using var request_ = new HttpRequestMessage();
             request_.Method = new HttpMethod("GET");
@@ -77,7 +76,7 @@ namespace SteamTradeHelper.Client
             var url_ = urlBuilder_.ToString();
             request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
 
-            var response_ = await this.httpClient.GetByteArrayAsync(url_);
+            var response_ = await httpClient.GetByteArrayAsync(url_);
             var source_ = Encoding.GetEncoding("utf-8").GetString(response_, 0, response_.Length - 1);
             return WebUtility.HtmlDecode(source_);
         }
@@ -86,7 +85,7 @@ namespace SteamTradeHelper.Client
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append("https://steamcommunity.com/market/itemordershistogram?country=AR&language=english&currency=34&item_nameid={itemId}");
-            urlBuilder_.Replace("{itemId}", Uri.EscapeDataString(this.ConvertToString(itemId, CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{itemId}", Uri.EscapeDataString(ConvertToString(itemId, CultureInfo.InvariantCulture)));
 
             using var request_ = new HttpRequestMessage();
             request_.Method = new HttpMethod("GET");
@@ -94,7 +93,7 @@ namespace SteamTradeHelper.Client
 
             var url_ = urlBuilder_.ToString();
             request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-            return await this.GetResponse<ItemPriceResponse>(request_);
+            return await GetResponse<ItemPriceResponse>(request_);
         }
 
         public async Task<string> GetBotsPageAsync()
@@ -110,7 +109,7 @@ namespace SteamTradeHelper.Client
             var url_ = urlBuilder_.ToString();
             request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
 
-            var response_ = await this.httpClient.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, CancellationToken.None).ConfigureAwait(false);
+            var response_ = await httpClient.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, CancellationToken.None).ConfigureAwait(false);
             var content_ = await response_.Content.ReadAsByteArrayAsync();
             var source_ = Encoding.GetEncoding("utf-8").GetString(content_, 0, content_.Length - 1);
             return WebUtility.HtmlDecode(source_);
@@ -120,7 +119,7 @@ namespace SteamTradeHelper.Client
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append("https://steamcommunity.com/inventory/{steamId}/753/6?count=1");
-            urlBuilder_.Replace("{steamId}", Uri.EscapeDataString(this.ConvertToString(steamId, CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{steamId}", Uri.EscapeDataString(ConvertToString(steamId, CultureInfo.InvariantCulture)));
 
             using var request_ = new HttpRequestMessage();
             request_.Method = new HttpMethod("GET");
@@ -128,14 +127,14 @@ namespace SteamTradeHelper.Client
 
             var url_ = urlBuilder_.ToString();
             request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-            return await this.GetResponse<InventoryResponse>(request_);
+            return await GetResponse<InventoryResponse>(request_);
         }
 
         private async Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers)
         {
             if (response == null || response.Content == null)
             {
-                return new ObjectResponseResult<T>(default, string.Empty);
+                return new ObjectResponseResult<T>(string.Empty, default);
             }
 
             try
@@ -143,9 +142,9 @@ namespace SteamTradeHelper.Client
                 using var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
                 using var streamReader = new StreamReader(responseStream);
                 using var jsonTextReader = new JsonTextReader(streamReader);
-                var serializer = JsonSerializer.Create(this.settings.Value);
+                var serializer = JsonSerializer.Create(settings.Value);
                 var typedBody = serializer.Deserialize<T>(jsonTextReader);
-                return new ObjectResponseResult<T>(typedBody, string.Empty);
+                return new ObjectResponseResult<T>(string.Empty, typedBody ?? default);
             }
             catch (JsonException exception)
             {
@@ -156,7 +155,7 @@ namespace SteamTradeHelper.Client
 
         private async Task<SwaggerResponse<T>> GetResponse<T>(HttpRequestMessage request_)
         {
-            using var response_ = await this.httpClient.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, CancellationToken.None).ConfigureAwait(false);
+            using var response_ = await httpClient.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, CancellationToken.None).ConfigureAwait(false);
             var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
             if (response_.Content != null && response_.Content.Headers != null)
             {
@@ -169,23 +168,23 @@ namespace SteamTradeHelper.Client
             var status_ = ((int)response_.StatusCode).ToString();
             if (status_ == "200")
             {
-                var objectResponse_ = await this.ReadObjectResponseAsync<T>(response_, headers_).ConfigureAwait(false);
+                var objectResponse_ = await ReadObjectResponseAsync<T>(response_, headers_).ConfigureAwait(false);
                 return new SwaggerResponse<T>((int)response_.StatusCode, headers_, objectResponse_.Object);
             }
             else if (status_ != "200" && status_ != "204")
             {
                 var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_ ?? string.Empty, headers_, null);
             }
 
             return new SwaggerResponse<T>((int)response_.StatusCode, headers_, default);
         }
 
-        private string ConvertToString(object value, CultureInfo cultureInfo)
+        private static string ConvertToString(object value, CultureInfo cultureInfo)
         {
             if (value is Enum)
             {
-                string name = Enum.GetName(value.GetType(), value);
+                var name = Enum.GetName(value.GetType(), value);
                 if (name != null)
                 {
                     var field = IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
@@ -200,7 +199,7 @@ namespace SteamTradeHelper.Client
             }
             else if (value is bool)
             {
-                return Convert.ToString(value, cultureInfo).ToLowerInvariant();
+                return Convert.ToString(value, cultureInfo)?.ToLowerInvariant() ?? string.Empty;
             }
             else if (value is byte[] v)
             {
@@ -209,10 +208,10 @@ namespace SteamTradeHelper.Client
             else if (value != null && value.GetType().IsArray)
             {
                 var array = Enumerable.OfType<object>((Array)value);
-                return string.Join(",", Enumerable.Select(array, o => this.ConvertToString(o, cultureInfo)));
+                return string.Join(",", Enumerable.Select(array, o => ConvertToString(o, cultureInfo)));
             }
 
-            return Convert.ToString(value, cultureInfo);
+            return Convert.ToString(value, cultureInfo) ?? string.Empty;
         }
     }
 }

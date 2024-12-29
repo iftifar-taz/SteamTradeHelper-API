@@ -7,6 +7,6 @@
 
         public DateTime LastSynced { get; set; }
 
-        public IReadOnlyCollection<T> List { get; set; }
+        public IReadOnlyCollection<T>? List { get; set; }
     }
 }

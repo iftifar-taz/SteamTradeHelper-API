@@ -9,14 +9,9 @@ namespace SteamTradeHelper.API.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class BotController : ControllerBase
+    public class BotController(IBotService botService) : ControllerBase
     {
-        private readonly IBotService botService;
-
-        public BotController(IBotService botService)
-        {
-            this.botService = botService;
-        }
+        private readonly IBotService botService = botService;
 
         [HttpGet("", Name = "GetAllBots")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -25,12 +20,12 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                var response = await this.botService.GetAll();
-                return this.Ok(response);
+                var response = await botService.GetAll();
+                return Ok(response);
             }
             catch (EmptyListException e)
             {
-                return this.BadRequest(e.Message);
+                return BadRequest(e.Message);
             }
         }
 
@@ -42,12 +37,12 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                var response = await this.botService.Get(botId);
-                return this.Ok(response);
+                var response = await botService.Get(botId);
+                return Ok(response);
             }
             catch (EmptyItemException e)
             {
-                return this.BadRequest(e.Message);
+                return BadRequest(e.Message);
             }
         }
     }

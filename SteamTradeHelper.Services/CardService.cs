@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using SteamTradeHelper.Context.Models;
 using SteamTradeHelper.Dtos;
 using SteamTradeHelper.Repositories.Contracts;
@@ -12,25 +7,18 @@ using SteamTradeHelper.Utilities.Exceptions;
 
 namespace SteamTradeHelper.Services
 {
-    public class CardService : ICardService
+    public class CardService(
+        IBaseRepository<Game> gameRepository,
+        IBaseRepository<Card> cardRepository,
+        IMapper mapper) : ICardService
     {
-        private readonly IBaseRepository<Game> gameRepository;
-        private readonly IBaseRepository<Card> cardRepository;
-        private readonly IMapper mapper;
-
-        public CardService(
-            IBaseRepository<Game> gameRepository,
-            IBaseRepository<Card> cardRepository,
-            IMapper mapper)
-        {
-            this.gameRepository = gameRepository;
-            this.cardRepository = cardRepository;
-            this.mapper = mapper;
-        }
+        private readonly IBaseRepository<Game> gameRepository = gameRepository;
+        private readonly IBaseRepository<Card> cardRepository = cardRepository;
+        private readonly IMapper mapper = mapper;
 
         public async Task<ListResponse<CardDto>> GetAll()
         {
-            var cards = await this.cardRepository.GetAll();
+            var cards = await cardRepository.GetAll();
             if (!cards.Any())
             {
                 throw new EmptyListException();
@@ -38,7 +26,7 @@ namespace SteamTradeHelper.Services
 
             return new ListResponse<CardDto>()
             {
-                List = this.mapper.Map<IEnumerable<Card>, IReadOnlyCollection<CardDto>>(cards),
+                List = mapper.Map<IEnumerable<Card>, IReadOnlyCollection<CardDto>>(cards),
                 Total = cards.Count(),
                 LastSynced = cards.Max(x => x.UpdatedAt),
             };
@@ -46,9 +34,9 @@ namespace SteamTradeHelper.Services
 
         public async Task<ListResponse<CardDto>> GetAll(int gameId)
         {
-            var query = this.cardRepository.GetQueryable();
+            var query = cardRepository.GetQueryable();
             query = query.Where(x => x.GameId == gameId);
-            var cards = await this.cardRepository.GetAllQuery(query);
+            var cards = await cardRepository.GetAllQuery(query);
             if (!cards.Any())
             {
                 throw new EmptyListException();
@@ -56,7 +44,7 @@ namespace SteamTradeHelper.Services
 
             return new ListResponse<CardDto>()
             {
-                List = this.mapper.Map<IEnumerable<Card>, IReadOnlyCollection<CardDto>>(cards),
+                List = mapper.Map<IEnumerable<Card>, IReadOnlyCollection<CardDto>>(cards),
                 Total = cards.Count(),
                 LastSynced = cards.Max(x => x.UpdatedAt),
             };
@@ -64,32 +52,27 @@ namespace SteamTradeHelper.Services
 
         public async Task SetTradeability(int gameId)
         {
-            var game = await this.gameRepository.GetById(gameId);
+            var game = await gameRepository.GetById(gameId) ?? throw new EmptyItemException();
             game.IsTradeable = false;
-            var cardQuery = this.cardRepository.GetQueryable();
+            var cardQuery = cardRepository.GetQueryable();
             cardQuery = cardQuery.Where(x => x.GameId == game.Id);
-            var cards = await this.cardRepository.GetAllQuery(cardQuery);
+            var cards = await cardRepository.GetAllQuery(cardQuery);
+            if (!cards.Any())
+            {
+                throw new EmptyListException();
+            }
+
             foreach (var card in cards)
             {
                 card.IsBuyTradeable = false;
                 card.IsSellTradeable = false;
             }
 
-            if (game == null)
-            {
-                throw new EmptyItemException();
-            }
-
-            if (!cards.Any())
-            {
-                throw new EmptyListException();
-            }
-
             var minCardBuyPrice = cards.Min(x => x.BuyPrice);
             var tradableCards = cards.Where(x => x.SellPrice > minCardBuyPrice * 1.15);
             if (tradableCards.Any())
             {
-                var minCard = cards.FirstOrDefault(x => x.BuyPrice == minCardBuyPrice);
+                var minCard = cards.FirstOrDefault(x => x.BuyPrice == minCardBuyPrice) ?? throw new EmptyItemException();
                 minCard.IsBuyTradeable = true;
                 foreach (var tradableCard in tradableCards)
                 {
@@ -99,9 +82,9 @@ namespace SteamTradeHelper.Services
                 game.IsTradeable = true;
             }
 
-            await this.cardRepository.PutAll(cards);
+            await cardRepository.PutAll(cards);
             game.UpdatedAt = DateTime.UtcNow;
-            await this.gameRepository.Put(game);
+            await gameRepository.Put(game);
         }
     }
 }

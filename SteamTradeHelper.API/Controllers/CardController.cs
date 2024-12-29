@@ -9,14 +9,9 @@ namespace SteamTradeHelper.API.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class CardController : ControllerBase
+    public class CardController(ICardService cardService) : ControllerBase
     {
-        private readonly ICardService cardService;
-
-        public CardController(ICardService cardService)
-        {
-            this.cardService = cardService;
-        }
+        private readonly ICardService cardService = cardService;
 
         [HttpGet("", Name = "GetAllCardsByGameId")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -26,12 +21,12 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                var response = await this.cardService.GetAll(gameId);
-                return this.Ok(response);
+                var response = await cardService.GetAll(gameId);
+                return Ok(response);
             }
             catch (EmptyListException e)
             {
-                return this.BadRequest(e.Message);
+                return BadRequest(e.Message);
             }
         }
 
@@ -43,12 +38,12 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                await this.cardService.SetTradeability(gameId);
-                return this.Ok();
+                await cardService.SetTradeability(gameId);
+                return Ok();
             }
             catch (EmptyItemException e)
             {
-                return this.BadRequest(e.Message);
+                return BadRequest(e.Message);
             }
         }
     }

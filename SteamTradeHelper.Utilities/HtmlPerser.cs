@@ -1,9 +1,6 @@
 ﻿using HtmlAgilityPack;
 using SteamTradeHelper.Client.Models.Bots;
 using SteamTradeHelper.Client.Models.Cards;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SteamTradeHelper.Utilities
 {
@@ -34,11 +31,11 @@ namespace SteamTradeHelper.Utilities
             var cardDivs = html.DocumentNode.Descendants()
                 .Where(x => x.Name == "div" && x.Attributes["class"] != null &&
                    x.Attributes["class"].Value.Contains("market_listing_nav_container"))
-                .ElementAtOrDefault(0)
-                .Descendants().ElementAtOrDefault(1)
-                .Descendants().ElementAtOrDefault(7).InnerHtml;
+                .ElementAtOrDefault(0)?
+                .Descendants().ElementAtOrDefault(1)?
+                .Descendants().ElementAtOrDefault(7)?.InnerHtml;
 
-            return cardDivs;
+            return cardDivs ?? string.Empty;
         }
 
         public static int GetItemId(string htmlPage)
@@ -46,9 +43,9 @@ namespace SteamTradeHelper.Utilities
             var html = new HtmlDocument();
             html.LoadHtml(htmlPage);
             var itemId = html.DocumentNode.Descendants()
-                .LastOrDefault(x => x.Name == "script")
+                .LastOrDefault(x => x.Name == "script")?
                 .InnerHtml.Split("ItemActivityTicker.Start(")[1]
-                .Split(");")[0];
+                .Split(");")[0] ?? string.Empty;
 
             return Convert.ToInt32(itemId.Trim());
         }
@@ -100,20 +97,20 @@ namespace SteamTradeHelper.Utilities
         {
             var cardName = node.Descendants()
                 .FirstOrDefault(x => (x.Name == "div" && x.Attributes["class"] != null &&
-                    x.Attributes["class"].Value.Contains("badge_card_set_text ellipsis") && x.ChildNodes.Count != 1))
-                .Descendants().ElementAtOrDefault(position).InnerText.Trim();
+                    x.Attributes["class"].Value.Contains("badge_card_set_text ellipsis") && x.ChildNodes.Count != 1))?
+                .Descendants().ElementAtOrDefault(position)?.InnerText.Trim();
 
-            return cardName;
+            return cardName ?? string.Empty;
         }
 
         private static string GetCardLogoUrl(HtmlNode node)
         {
             var cardLogo = node.Descendants()
                 .FirstOrDefault(x => (x.Name == "img" && x.Attributes["class"] != null &&
-                   x.Attributes["class"].Value.Contains("gamecard")))
+                   x.Attributes["class"].Value.Contains("gamecard")))?
                 .Attributes["src"].Value;
 
-            return cardLogo;
+            return cardLogo ?? string.Empty;
         }
 
         private static int GetCardInventoryCount(HtmlNode node)
@@ -125,8 +122,7 @@ namespace SteamTradeHelper.Utilities
             if (cardQuantityDiv != null)
             {
                 var countString = cardQuantityDiv.InnerHtml;
-                var count = Convert.ToInt32(countString.Substring(1, countString.Length - 2));
-                return count;
+                return Convert.ToInt32(countString[1..^1]);
             }
 
             return 0;
@@ -136,46 +132,46 @@ namespace SteamTradeHelper.Utilities
         {
             var steamId = node.Descendants()
                 .FirstOrDefault(x => (x.Name == "a" && x.Attributes["href"] != null &&
-                   x.Attributes["href"].Value.Contains("https://steamcommunity.com/profiles")))
+                   x.Attributes["href"].Value.Contains("https://steamcommunity.com/profiles")))?
                 .Attributes["href"].Value
                 .Split("/").Last();
-            return steamId;
+            return steamId ?? string.Empty;
         }
 
         private static string GetBotLogoUrl(HtmlNode node)
         {
             var logoUrl = node.Descendants()
                 .FirstOrDefault(x => (x.Name == "img" && x.Attributes["class"] != null &&
-                   x.Attributes["class"].Value.Contains("user-image")))
+                   x.Attributes["class"].Value.Contains("user-image")))?
                 .Attributes["src"].Value;
-            return logoUrl;
+            return logoUrl ?? string.Empty;
         }
 
         private static string GetBotName(HtmlNode node)
         {
             var name = node.Descendants()
                 .FirstOrDefault(x => (x.Name == "div" && x.Attributes["class"] != null &&
-                   x.Attributes["class"].Value.Contains("user-nickname")))
-                .Descendants().ElementAtOrDefault(0).InnerHtml;
-            return name;
+                   x.Attributes["class"].Value.Contains("user-nickname")))?
+                .Descendants().ElementAtOrDefault(0)?.InnerHtml;
+            return name ?? string.Empty;
         }
 
         private static string GetBotTradeType(HtmlNode node)
         {
             var tradeType = node.Descendants()
                 .FirstOrDefault(x => (x.Name == "div" && x.Attributes["class"] != null &&
-                   x.Attributes["class"].Value.Contains("badge")))
-                .Descendants().ElementAtOrDefault(0).InnerHtml;
-            return tradeType;
+                   x.Attributes["class"].Value.Contains("badge")))?
+                .Descendants().ElementAtOrDefault(0)?.InnerHtml;
+            return tradeType ?? string.Empty;
         }
 
         private static string GetBotTradeLink(HtmlNode node)
         {
             var tradeLink = node.Descendants()
                 .FirstOrDefault(x => (x.Name == "a" && x.Attributes["href"] != null &&
-                   x.Attributes["href"].Value.Contains("https://steamcommunity.com/tradeoffer/new")))
+                   x.Attributes["href"].Value.Contains("https://steamcommunity.com/tradeoffer/new")))?
                 .Attributes["href"].Value;
-            return tradeLink;
+            return tradeLink ?? string.Empty;
         }
 
         private static bool GetBotIsTrading(HtmlNode node, string type)

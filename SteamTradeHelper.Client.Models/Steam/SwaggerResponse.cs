@@ -1,32 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SteamTradeHelper.Client.Models.Steam
+﻿namespace SteamTradeHelper.Client.Models.Steam
 {
-    public partial class SwaggerResponse
+    public partial class SwaggerResponse(int statusCode, IReadOnlyDictionary<string, IEnumerable<string>> headers)
     {
-        public SwaggerResponse(int statusCode, IReadOnlyDictionary<string, IEnumerable<string>> headers)
-        {
-            this.StatusCode = statusCode;
-            this.Headers = headers;
-        }
+        public int StatusCode { get; private set; } = statusCode;
 
-        public int StatusCode { get; private set; }
-
-        public IReadOnlyDictionary<string, IEnumerable<string>> Headers { get; private set; }
+        public IReadOnlyDictionary<string, IEnumerable<string>> Headers { get; private set; } = headers;
     }
 
-    public partial class SwaggerResponse<TResult> : SwaggerResponse
+    public partial class SwaggerResponse<TResult>(int statusCode, IReadOnlyDictionary<string, IEnumerable<string>> headers, TResult? result) : SwaggerResponse(statusCode, headers)
     {
-        public SwaggerResponse(int statusCode, IReadOnlyDictionary<string, IEnumerable<string>> headers, TResult result)
-            : base(statusCode, headers)
-        {
-            this.Result = result;
-        }
-
-        public TResult Result { get; private set; }
+        public TResult? Result { get; private set; } = result;
     }
 }

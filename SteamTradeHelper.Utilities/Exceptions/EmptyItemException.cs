@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SteamTradeHelper.Utilities.Exceptions
+﻿namespace SteamTradeHelper.Utilities.Exceptions
 {
     /// <inheritdoc />
     /// <summary>
@@ -38,16 +31,6 @@ namespace SteamTradeHelper.Utilities.Exceptions
         /// <param name="inner">inner Exception. Instance of the <see cref="Exception"/> class.</param>
         public EmptyItemException(string message, Exception inner)
             : base(message, inner)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EmptyItemException"/> class.
-        /// </summary>
-        /// <param name="info">info. Instance of the <see cref="SerializationInfo"/> class.</param>
-        /// <param name="context">context. Instance of the <see cref="StreamingContext"/> class.</param>
-        protected EmptyItemException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

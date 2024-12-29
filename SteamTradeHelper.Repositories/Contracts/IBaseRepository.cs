@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SteamTradeHelper.Repositories.Contracts
+﻿namespace SteamTradeHelper.Repositories.Contracts
 {
     public interface IBaseRepository<T>
         where T : class
@@ -15,11 +9,11 @@ namespace SteamTradeHelper.Repositories.Contracts
 
         Task<IEnumerable<T>> GetAllQuery(IQueryable<T> query);
 
-        Task<T> GetById(int id);
+        Task<T?> GetById(int id);
 
-        Task<T> GetByIdQuery(int id, IQueryable<T> query);
+        Task<T?> GetByIdQuery(int id, IQueryable<T> query);
 
-        Task<T> GetQuery(IQueryable<T> query);
+        Task<T?> GetQuery(IQueryable<T> query);
 
         Task Save(T obj);
 

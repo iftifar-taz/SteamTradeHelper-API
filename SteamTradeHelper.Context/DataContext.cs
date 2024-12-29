@@ -15,16 +15,16 @@ namespace SteamTradeHelper.Context
         /// <inheritdoc/>
         public override int SaveChanges()
         {
-            this.UpdateCreatedAndUpdatedBy();
-            this.UpdateUpdatedAt();
+            UpdateCreatedAndUpdatedBy();
+            UpdateUpdatedAt();
             return base.SaveChanges();
         }
 
         /// <inheritdoc/>
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
-            this.UpdateCreatedAndUpdatedBy();
-            this.UpdateUpdatedAt();
+            UpdateCreatedAndUpdatedBy();
+            UpdateUpdatedAt();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
@@ -43,7 +43,7 @@ namespace SteamTradeHelper.Context
             var user = GlobalConstants.DefaultUser; //TO:DO
             user ??= GlobalConstants.DefaultUser;
 
-            foreach (var entry in this.ChangeTracker.Entries())
+            foreach (var entry in ChangeTracker.Entries())
             {
                 if (entry.State == EntityState.Added)
                 {
@@ -56,7 +56,7 @@ namespace SteamTradeHelper.Context
 
         private void UpdateUpdatedAt()
         {
-            foreach (var entry in this.ChangeTracker.Entries().Where(x => x.State == EntityState.Added || x.State == EntityState.Modified))
+            foreach (var entry in ChangeTracker.Entries().Where(x => x.State == EntityState.Added || x.State == EntityState.Modified))
             {
                 entry.Property("UpdatedAt").CurrentValue = DateTime.UtcNow;
             }
