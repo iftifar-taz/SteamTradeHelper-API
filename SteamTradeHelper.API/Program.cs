@@ -6,6 +6,7 @@ using SteamTradeHelper.Repositories.Infrastructure;
 using SteamTradeHelper.Client.Infrastructure;
 using SteamTradeHelper.Mappings.Infrastructure;
 using SteamTradeHelper.API.Infrastructure.Cors;
+using SteamTradeHelper.API.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,7 @@ app.UseHttpsRedirection();
 app.UseCustomCors();
 
 app.UseAuthorization();
+app.UseCustomMiddlewares();
 
 app.MapControllers();
 
