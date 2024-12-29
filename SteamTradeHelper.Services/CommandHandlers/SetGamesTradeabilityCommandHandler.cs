@@ -1,21 +1,20 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SteamTradeHelper.Context.Models;
 using SteamTradeHelper.Repositories.Contracts;
 using SteamTradeHelper.Services.Commands;
 using SteamTradeHelper.Utilities.Exceptions;
 
 namespace SteamTradeHelper.Services.CommandHandlers
 {
-    public class SetGamesTradeabilityCommandHandler(IBaseRepository<Game> gameRepository) : IRequestHandler<SetGamesTradeabilityCommand>
+    public class SetGamesTradeabilityCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<SetGamesTradeabilityCommand>
     {
-        private readonly IBaseRepository<Game> gameRepository = gameRepository;
+        private readonly IUnitOfWork unitOfWork = unitOfWork;
 
         public async Task Handle(SetGamesTradeabilityCommand request, CancellationToken cancellationToken)
         {
-            var query = gameRepository.GetQueryable();
+            var query = unitOfWork.GameRepository.GetQueryable();
             query = query.Include(x => x.Cards);
-            var games = await gameRepository.GetAllQuery(query);
+            var games = await unitOfWork.GameRepository.GetAllQuery(query);
             if (!games.Any())
             {
                 throw new EmptyListException();
@@ -33,7 +32,8 @@ namespace SteamTradeHelper.Services.CommandHandlers
 #pragma warning restore IDE0079 // Remove unnecessary suppression
             }
 
-            await gameRepository.PutAll(gamesWithCards);
+            unitOfWork.GameRepository.PutAll(gamesWithCards);
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

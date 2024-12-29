@@ -1,24 +1,22 @@
 ﻿using MediatR;
 using SteamTradeHelper.Client.Contracts;
-using SteamTradeHelper.Context.Models;
 using SteamTradeHelper.Repositories.Contracts;
 using SteamTradeHelper.Services.Commands;
 using SteamTradeHelper.Utilities.Exceptions;
 
 namespace SteamTradeHelper.Services.CommandHandlers
 {
-    public class SyncGameCardPricesCommandHandler(IBaseRepository<Game> gameRepository, IBaseRepository<Card> cardRepository, ISteamClient client) : IRequestHandler<SyncGameCardPricesCommand>
+    public class SyncGameCardPricesCommandHandler(IUnitOfWork unitOfWork, ISteamClient client) : IRequestHandler<SyncGameCardPricesCommand>
     {
-        private readonly IBaseRepository<Game> gameRepository = gameRepository;
-        private readonly IBaseRepository<Card> cardRepository = cardRepository;
+        private readonly IUnitOfWork unitOfWork = unitOfWork;
         private readonly ISteamClient client = client;
 
         public async Task Handle(SyncGameCardPricesCommand request, CancellationToken cancellationToken)
         {
-            var game = await gameRepository.GetById(request.GameId) ?? throw new EmptyItemException();
-            var cardQuery = cardRepository.GetQueryable();
+            var game = await unitOfWork.GameRepository.GetById(request.GameId) ?? throw new EmptyItemException();
+            var cardQuery = unitOfWork.CardRepository.GetQueryable();
             cardQuery = cardQuery.Where(x => x.GameId == game.Id);
-            var cards = await cardRepository.GetAllQuery(cardQuery);
+            var cards = await unitOfWork.CardRepository.GetAllQuery(cardQuery);
             if (!cards.Any())
             {
                 throw new EmptyListException();
@@ -50,9 +48,10 @@ namespace SteamTradeHelper.Services.CommandHandlers
                 game.IsTradeable = true;
             }
 
-            await cardRepository.PutAll(cards);
+            unitOfWork.CardRepository.PutAll(cards);
             game.UpdatedAt = DateTime.UtcNow;
-            await gameRepository.Put(game);
+            unitOfWork.GameRepository.Put(game);
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

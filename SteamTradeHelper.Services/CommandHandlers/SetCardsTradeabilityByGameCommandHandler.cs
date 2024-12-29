@@ -1,23 +1,21 @@
 ﻿using MediatR;
-using SteamTradeHelper.Context.Models;
 using SteamTradeHelper.Repositories.Contracts;
 using SteamTradeHelper.Services.Commands;
 using SteamTradeHelper.Utilities.Exceptions;
 
 namespace SteamTradeHelper.Services.CommandHandlers
 {
-    public class SetCardsTradeabilityByGameCommandHandler(IBaseRepository<Game> gameRepository, IBaseRepository<Card> cardRepository) : IRequestHandler<SetCardsTradeabilityByGameCommand>
+    public class SetCardsTradeabilityByGameCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<SetCardsTradeabilityByGameCommand>
     {
-        private readonly IBaseRepository<Game> gameRepository = gameRepository;
-        private readonly IBaseRepository<Card> cardRepository = cardRepository;
+        private readonly IUnitOfWork unitOfWork = unitOfWork;
 
         public async Task Handle(SetCardsTradeabilityByGameCommand request, CancellationToken cancellationToken)
         {
-            var game = await gameRepository.GetById(request.GameId) ?? throw new EmptyItemException();
+            var game = await unitOfWork.GameRepository.GetById(request.GameId) ?? throw new EmptyItemException();
             game.IsTradeable = false;
-            var cardQuery = cardRepository.GetQueryable();
+            var cardQuery = unitOfWork.CardRepository.GetQueryable();
             cardQuery = cardQuery.Where(x => x.GameId == game.Id);
-            var cards = await cardRepository.GetAllQuery(cardQuery);
+            var cards = await unitOfWork.CardRepository.GetAllQuery(cardQuery);
             if (!cards.Any())
             {
                 throw new EmptyListException();
@@ -43,9 +41,10 @@ namespace SteamTradeHelper.Services.CommandHandlers
                 game.IsTradeable = true;
             }
 
-            await cardRepository.PutAll(cards);
+            unitOfWork.CardRepository.PutAll(cards);
             game.UpdatedAt = DateTime.UtcNow;
-            await gameRepository.Put(game);
+            unitOfWork.GameRepository.Put(game);
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

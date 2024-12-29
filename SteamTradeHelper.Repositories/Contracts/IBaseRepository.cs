@@ -19,12 +19,12 @@
 
         Task SaveAll(IEnumerable<T> objs);
 
-        Task Put(T obj);
+        void Put(T obj);
 
-        Task PutAll(IEnumerable<T> objs);
+        void PutAll(IEnumerable<T> objs);
 
-        Task Delete(T obj);
+        void Delete(T obj);
 
-        Task DeleteAll(IEnumerable<T> objs);
+        void DeleteAll(IEnumerable<T> objs);
     }
 }

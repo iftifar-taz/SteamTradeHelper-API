@@ -8,7 +8,6 @@ namespace SteamTradeHelper.Repositories
     public class BaseRepository<T>(DataContext context) : IBaseRepository<T>
         where T : Base
     {
-        private readonly DataContext context = context;
         private readonly DbSet<T> entity = context.Set<T>();
 
         public virtual IQueryable<T> GetQueryable()
@@ -44,35 +43,31 @@ namespace SteamTradeHelper.Repositories
         public virtual async Task Save(T obj)
         {
             await entity.AddAsync(obj);
-            await context.SaveChangesAsync();
         }
 
         public virtual async Task SaveAll(IEnumerable<T> objs)
         {
             await entity.AddRangeAsync(objs);
-            await context.SaveChangesAsync();
         }
 
-        public virtual async Task Put(T obj)
+        public virtual void Put(T obj)
         {
-            await context.SaveChangesAsync();
+            entity.Update(obj);
         }
 
-        public virtual async Task PutAll(IEnumerable<T> objs)
+        public virtual void PutAll(IEnumerable<T> objs)
         {
-            await context.SaveChangesAsync();
+            entity.UpdateRange(objs);
         }
 
-        public virtual async Task Delete(T obj)
+        public virtual void Delete(T obj)
         {
             entity.Remove(obj);
-            await context.SaveChangesAsync();
         }
 
-        public virtual async Task DeleteAll(IEnumerable<T> objs)
+        public virtual void DeleteAll(IEnumerable<T> objs)
         {
             entity.RemoveRange(objs);
-            await context.SaveChangesAsync();
         }
     }
 }

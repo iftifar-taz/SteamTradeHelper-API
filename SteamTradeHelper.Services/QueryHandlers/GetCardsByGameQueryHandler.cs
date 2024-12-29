@@ -8,16 +8,16 @@ using SteamTradeHelper.Utilities.Exceptions;
 
 namespace SteamTradeHelper.Services.QueryHandlers
 {
-    public class GetCardsByGameQueryHandler(IBaseRepository<Card> cardRepository, IMapper mapper) : IRequestHandler<GetCardsByGameQuery, ListResponse<CardDto>>
+    public class GetCardsByGameQueryHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetCardsByGameQuery, ListResponse<CardDto>>
     {
-        private readonly IBaseRepository<Card> cardRepository = cardRepository;
+        private readonly IUnitOfWork unitOfWork = unitOfWork;
         private readonly IMapper mapper = mapper;
 
         public async Task<ListResponse<CardDto>> Handle(GetCardsByGameQuery request, CancellationToken cancellationToken)
         {
-            var query = cardRepository.GetQueryable();
+            var query = unitOfWork.CardRepository.GetQueryable();
             query = query.Where(x => x.GameId == request.GameId);
-            var cards = await cardRepository.GetAllQuery(query);
+            var cards = await unitOfWork.CardRepository.GetAllQuery(query);
             if (!cards.Any())
             {
                 throw new EmptyListException();

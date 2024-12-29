@@ -8,14 +8,14 @@ using SteamTradeHelper.Utilities.Exceptions;
 
 namespace SteamTradeHelper.Services.QueryHandlers
 {
-    public class GetBotQueryHandler(IBaseRepository<Bot> botRepository, IMapper mapper) : IRequestHandler<GetBotQuery, BotDto>
+    public class GetBotQueryHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetBotQuery, BotDto>
     {
-        private readonly IBaseRepository<Bot> botRepository = botRepository;
+        private readonly IUnitOfWork unitOfWork = unitOfWork;
         private readonly IMapper mapper = mapper;
 
         public async Task<BotDto> Handle(GetBotQuery request, CancellationToken cancellationToken)
         {
-            var bot = await botRepository.GetById(request.BotId) ?? throw new EmptyItemException();
+            var bot = await unitOfWork.BotRepository.GetById(request.BotId) ?? throw new EmptyItemException();
             return mapper.Map<Bot, BotDto>(bot);
         }
     }
