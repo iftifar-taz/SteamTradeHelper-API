@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using SteamTradeHelper.Dtos;
-using SteamTradeHelper.Services.Contracts;
+using SteamTradeHelper.Services.Commands;
+using SteamTradeHelper.Services.Querires;
 using SteamTradeHelper.Utilities.Exceptions;
 
 namespace SteamTradeHelper.API.Controllers
@@ -9,19 +11,19 @@ namespace SteamTradeHelper.API.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class CardController(ICardService cardService) : ControllerBase
+    public class CardController(IMediator mediator) : ControllerBase
     {
-        private readonly ICardService cardService = cardService;
+        private readonly IMediator mediator = mediator;
 
-        [HttpGet("", Name = "GetAllCardsByGameId")]
+        [HttpGet("", Name = "GetAllCardsByGame")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ListResponse<CardDto>>> GetAllCardsByGameId(
+        public async Task<ActionResult<ListResponse<CardDto>>> GetAllCardsByGame(
             [FromRoute] int gameId)
         {
             try
             {
-                var response = await cardService.GetAll(gameId);
+                var response = await mediator.Send(new GetCardsByGameQuery(gameId));
                 return Ok(response);
             }
             catch (EmptyListException e)
@@ -30,15 +32,15 @@ namespace SteamTradeHelper.API.Controllers
             }
         }
 
-        [HttpGet("set-tradeability", Name = "SetCardsTradeability")]
+        [HttpPatch("set-tradeability", Name = "SetCardsTradeabilityByGame")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> GetCardsTradeability(
+        public async Task<ActionResult> SetCardsTradeabilityByGame(
             [FromRoute] int gameId)
         {
             try
             {
-                await cardService.SetTradeability(gameId);
+                await mediator.Send(new SetCardsTradeabilityByGameCommand(gameId));
                 return Ok();
             }
             catch (EmptyItemException e)

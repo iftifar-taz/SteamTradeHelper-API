@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using SteamTradeHelper.Dtos;
-using SteamTradeHelper.Services.Contracts;
+using SteamTradeHelper.Services.Commands;
+using SteamTradeHelper.Services.Querires;
 using SteamTradeHelper.Utilities.Exceptions;
 
 namespace SteamTradeHelper.API.Controllers
@@ -9,9 +11,9 @@ namespace SteamTradeHelper.API.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class GameController(IGameService gameService) : ControllerBase
+    public class GameController(IMediator mediator) : ControllerBase
     {
-        private readonly IGameService gameService = gameService;
+        private readonly IMediator mediator = mediator;
 
         [HttpGet("", Name = "GetAllGames")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -20,7 +22,7 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                var response = await gameService.GetAll();
+                var response = await mediator.Send(new GetGamesQuery());
                 return Ok(response);
             }
             catch (EmptyListException e)
@@ -37,7 +39,7 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                var response = await gameService.Get(gameId);
+                var response = await mediator.Send(new GetGameQuery(gameId));
                 return Ok(response);
             }
             catch (EmptyItemException e)
@@ -46,14 +48,14 @@ namespace SteamTradeHelper.API.Controllers
             }
         }
 
-        [HttpGet("set-tradeability", Name = "SetGamesTradeability")]
+        [HttpPatch("set-tradeability", Name = "SetGamesTradeability")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> GetGamesTradeability()
         {
             try
             {
-                await gameService.SetTradeability();
+                await mediator.Send(new SetGamesTradeabilityCommand());
                 return Ok();
             }
             catch (EmptyItemException e)
@@ -70,7 +72,7 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                await gameService.SetTradeability(gameId);
+                await mediator.Send(new SetGameTradeabilityCommand(gameId));
                 return Ok();
             }
             catch (EmptyItemException e)

@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using SteamTradeHelper.Dtos;
-using SteamTradeHelper.Services.Contracts;
+using SteamTradeHelper.Services.Commands;
 
 namespace SteamTradeHelper.API.Controllers
 {
@@ -8,15 +9,15 @@ namespace SteamTradeHelper.API.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class SteamSyncController(ISteamSyncService steamGamesService) : ControllerBase
+    public class SteamSyncController(IMediator mediator) : ControllerBase
     {
-        private readonly ISteamSyncService steamGamesService = steamGamesService;
+        private readonly IMediator mediator = mediator;
 
         [HttpPost("games", Name = "SyncGames")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> SyncGames()
         {
-            await steamGamesService.SyncGames();
+            await mediator.Send(new SyncGamesCommand());
             return Ok();
         }
 
@@ -25,7 +26,7 @@ namespace SteamTradeHelper.API.Controllers
         public async Task<ActionResult> SyncGameCards(
             [FromRoute] int gameId)
         {
-            await steamGamesService.SyncGameCards(gameId);
+            await mediator.Send(new SyncGameCardsCommand(gameId));
             return Ok();
         }
 
@@ -34,7 +35,7 @@ namespace SteamTradeHelper.API.Controllers
         public async Task<ActionResult> SyncGameCardPrices(
             [FromRoute] int gameId)
         {
-            await steamGamesService.SyncCardPrices(gameId);
+            await mediator.Send(new SyncGameCardPricesCommand(gameId));
             return Ok();
         }
 
@@ -42,7 +43,7 @@ namespace SteamTradeHelper.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> SyncBots()
         {
-            await steamGamesService.SyncBots();
+            await mediator.Send(new SyncBotsCommand());
             return Ok();
         }
 
@@ -51,7 +52,7 @@ namespace SteamTradeHelper.API.Controllers
         public async Task<ActionResult<BotDto>> SyncBotInventoryCount(
             [FromRoute] int botId)
         {
-            await steamGamesService.SyncBotInventoryCount(botId);
+            await mediator.Send(new SyncBotInventoryCountCommand(botId));
             return Ok();
         }
     }

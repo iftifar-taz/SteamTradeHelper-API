@@ -6,7 +6,6 @@ using SteamTradeHelper.Context;
 using SteamTradeHelper.Dtos;
 using SteamTradeHelper.Mappings.Infrastructure;
 using SteamTradeHelper.Repositories.Infrastructure;
-using SteamTradeHelper.Services.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,9 +18,17 @@ builder.Services.AddDbContext<DataContext>(o => o.UseSqlServer(builder.Configura
 builder.Services.Configure<SteamSettings>(builder.Configuration.GetSection("SteamSettings"));
 
 builder.Services.AddCustomRepositories();
-builder.Services.AddCustomServices();
 builder.Services.AddCustomClient();
 builder.Services.AddCustomAutoMapper();
+
+builder.Services.AddMediatR(config =>
+{
+    config.RegisterServicesFromAssemblies(
+        AppDomain.CurrentDomain.GetAssemblies()
+            .Where(assembly => assembly.FullName != null && assembly.FullName.StartsWith("SteamTradeHelper.Services"))
+            .ToArray()
+    );
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

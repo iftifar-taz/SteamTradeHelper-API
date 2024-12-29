@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using SteamTradeHelper.Dtos;
-using SteamTradeHelper.Services.Contracts;
+using SteamTradeHelper.Services.Querires;
 using SteamTradeHelper.Utilities.Exceptions;
 
 namespace SteamTradeHelper.API.Controllers
@@ -9,9 +10,9 @@ namespace SteamTradeHelper.API.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class BotController(IBotService botService) : ControllerBase
+    public class BotController(IMediator mediator) : ControllerBase
     {
-        private readonly IBotService botService = botService;
+        private readonly IMediator mediator = mediator;
 
         [HttpGet("", Name = "GetAllBots")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -20,7 +21,7 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                var response = await botService.GetAll();
+                var response = await mediator.Send(new GetBotsQuery());
                 return Ok(response);
             }
             catch (EmptyListException e)
@@ -37,7 +38,7 @@ namespace SteamTradeHelper.API.Controllers
         {
             try
             {
-                var response = await botService.Get(botId);
+                var response = await mediator.Send(new GetBotQuery(botId));
                 return Ok(response);
             }
             catch (EmptyItemException e)
